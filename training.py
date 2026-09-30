@@ -1,4 +1,5 @@
 import torch, torchvision
+import sys
 import pathlib
 from torchvision import transforms
 from torch import nn, optim
@@ -32,9 +33,20 @@ logits = model(images)
 loss = criterion(logits, labels)
 print(loss)
 loss.backward()
-optimizer = optim.SGD(model.parameters(), lr=0.01)
 
-epochs = 5
+try:
+    learning_rate = float(input("Learning rate: "))
+except ValueError:
+    sys.exit("Error, invalid learning rate, shutting down")
+
+optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+
+epochs = input("Number of epochs: ")
+while not epochs.isdigit():
+        epochs = input("Error, epoch amount is a non positive integer value, try again: ")
+
+epochs = int(epochs)
+
 for epoch in range(epochs):
     running_loss = 0
     for images, labels in trainloader:
